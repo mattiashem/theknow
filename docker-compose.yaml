@@ -1,0 +1,14 @@
+version: '2'
+services:
+  api:
+    build: site/.
+    image: mattiashem/know-site
+    volumes:
+      - ./site/:/code
+    environment:
+      - site=www.alamo.co.uk
+    command: tail -f /etc/fstab
+  mongo:
+    image: mongo
+  redis:
+    image: redis
