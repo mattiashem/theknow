@@ -1,0 +1,8 @@
+pymongo
+falcon
+gunicorn
+redis
+bcrypt
+requests
+elasticsearch
+bs4

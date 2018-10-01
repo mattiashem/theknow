@@ -1,4 +1,5 @@
 from bs4 import BeautifulSoup
+import dbconnection
 import re
 import requests
 import hashlib
@@ -18,7 +19,7 @@ def hash_file(url):
 		buf = afile.read()
 		hasher.update(buf)
 	print("File="+url+" Hash="+hasher.hexdigest())
-
+	dbconnection.add_file_db(url,hash_name.hexdigest(),hasher.hexdigest())
 
 
 
