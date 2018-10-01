@@ -7,10 +7,11 @@ RUN apt-get update && apt-get install -y python-pip python-dev git zlib1g-dev li
 RUN pip install --upgrade f
 
 RUN mkdir /code
+RUN mkdir /files
 COPY . /code/
 WORKDIR /code
 RUN pip install -r requirements.txt
 
 
 
-CMD gunicorn app:api -b 0.0.0.0:8080
+CMD ["python","-u","getlinks.py"]

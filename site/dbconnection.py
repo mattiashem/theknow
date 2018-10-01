@@ -2,6 +2,7 @@ from pymongo import MongoClient
 import datetime
 import hashcache
 import alert
+import portopen
 
 #
 # Used to connect to the db 
@@ -10,6 +11,11 @@ import alert
 
 
 ## Conenct to mongo and set collection
+
+
+
+portopen.wait_net_service('mongo',27017)
+
 client = MongoClient('mongo', 27017)
 db=client.theknow
 
@@ -20,7 +26,7 @@ def add_file_db(url,id,hash):
 	'''
 	is_there_page = db.pages.find_one({"id":id})
 
-	if is_there_page == "None":
+	if is_there_page == None:
 		#We dont have file with that id in the db lets add it !!
 		page = {"url": url,
 			"id": id,
@@ -28,7 +34,7 @@ def add_file_db(url,id,hash):
          	"version": "latest",
          	"date": datetime.datetime.utcnow()}
 		page_id = db.pages.insert_one(page).inserted_id
-		alert.print_message("Added a new page "+page_id)
+		alert.print_message("Added a new page "+str(page_id))
 		#And add it to the cache so we dont need to ask here every time !
 		hashcache.add_to_redis(id,hash)
 
@@ -41,6 +47,7 @@ def add_file_db(url,id,hash):
 		hashcache.add_to_redis(id,hash)
 
 		#Return the hash from the db
+		alert.print_message(is_there_page)
 		return is_there_page["hash"]
 
 

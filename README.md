@@ -14,14 +14,14 @@ Run this script to verify that the js file on the webpage has not bean changes.
 
 ### Roadmap
 
-- Save hash and file name to mongodb for storage
-- Save a copy of the hash in redis for fast access
-- Setup a timer and then timer is run check if has on live page matches the has in the db
-- Setup for multi page setup
+- Save hash and file name to mongodb for storage (Done)
+- Save a copy of the hash in redis for fast access (Done)
+- Setup a timer and then timer is run check if has on live page matches the has in the db (Done)
+- Setup for multi page setup (Done)
 
 
 
-### How its used 
+## How its used 
 
 ### Prereq
 
@@ -29,6 +29,41 @@ Run this script to verify that the js file on the webpage has not bean changes.
 - docker-compose
 
 
+
+### Edit the file docker-compose-yaml
+
+
+In the file docker-compose.yaml set the site and sleep time 
+
+```
+    environment:
+      - sites=www.alamo.co.uk,www.enterprise.com
+      - sleep=3600
+
+```
+
+## Start the check
+
+
+```
+docker-compose up 
+```
+
+
+
+
+
+## Developer Guide
+
+Edit the file and comment oup the command 
+
+
+```
+    command: tail -f /etc/fstab
+
+```
+
+Start docker compose
 
 
 ```

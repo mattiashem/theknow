@@ -3,8 +3,16 @@ import dbconnection
 import hashcache
 import re
 import requests
+import os
+import time
+
+#Own packages
 import hashlib
 import alert
+
+
+
+
 
 
 def hash_file(url):
@@ -64,29 +72,44 @@ def check_the_hash(site_hash, db_hash):
 
 
 
+def scan_site(site):
+	'''
+	Here we are scanning a site one by one
+	'''
 
-
-
-
-site = "https://www.alamo.co.uk"
-r  = requests.get(site)
-data = r.text
-soup = BeautifulSoup(data,'html.parser')
-
-
-alert.print_message("Check running on "+site)
-
-for link in soup.find_all('script'):
-    
-    if str(link.get('src')) != "None":
-		if str(link.get('src')).startswith('http'):
-			hash_file(link.get('src'))
-		elif str(link.get('src')).startswith('//'):
-			hash_file(link.get('src').replace('//','https://'))
-		else:
-			hash_file(site+link.get('src'))
+	r  = requests.get(site)
+	data = r.text
+	soup = BeautifulSoup(data,'html.parser')
+	
+	
+	alert.print_message("Check running on "+site)
+	
+	for link in soup.find_all('script'):
+	    
+	    if str(link.get('src')) != "None":
+			if str(link.get('src')).startswith('http'):
+				hash_file(link.get('src'))
+			elif str(link.get('src')).startswith('//'):
+				hash_file(link.get('src').replace('//','https://'))
+			else:
+				hash_file(site+link.get('src'))
 			
 
+
+
+
+#Getitng the sites we want to scan and how often
+sites = os.environ['sites']
+sleep_time = int(os.environ['sleep'])
+site_list = sites.split(",")
+
+while True:
+	for site in site_list:
+		print(site)
+		scan_site("https://"+site)
+	
+	#Sleep for the fime we set before
+	time.sleep(sleep_time)
 
 
 

@@ -6,8 +6,9 @@ services:
     volumes:
       - ./site/:/code
     environment:
-      - site=www.alamo.co.uk
-    command: tail -f /etc/fstab
+      - sites=www.alamo.co.uk,www.enterprise.com
+      - sleep=3600
+    #command: tail -f /etc/fstab
   mongo:
     image: mongo
   redis:

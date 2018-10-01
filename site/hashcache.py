@@ -1,5 +1,6 @@
 import redis
 import alert
+import portopen
 #
 #
 # To save some time and to make it statelass we add a cache to store the hash in.
@@ -7,7 +8,7 @@ import alert
 # Then we run the script we can easy test if we already have the result in the cache !
 #
 #
-
+portopen.wait_net_service('redis',6379)
 r = redis.StrictRedis(host='redis', port=6379, db=0)
 
 
