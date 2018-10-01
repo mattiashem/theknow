@@ -1,8 +1,11 @@
 from bs4 import BeautifulSoup
 import dbconnection
+import hashcache
 import re
 import requests
 import hashlib
+import alert
+
 
 def hash_file(url):
 	'''
@@ -18,8 +21,50 @@ def hash_file(url):
 	with open('/files/'+hash_name.hexdigest(), 'rb') as afile:
 		buf = afile.read()
 		hasher.update(buf)
-	print("File="+url+" Hash="+hasher.hexdigest())
-	dbconnection.add_file_db(url,hash_name.hexdigest(),hasher.hexdigest())
+	alert.print_message("File="+url+" Hash="+hasher.hexdigest())
+	
+
+	#We have a file lets see if we have a hashed version
+	
+
+	db_file_hash=False
+	#Do we have a cache  for this file
+	db_file_hash = hashcache.check_hash_redis(hash_name.hexdigest())
+	if db_file_hash == False:
+		#We dont have a cached version check in the db else add it there
+		db_file_hash = dbconnection.add_file_db(url,hash_name.hexdigest(),hasher.hexdigest())
+		if db_file_hash != False:
+			# We got back a has from the db lets check it 
+			check_the_hash(db_file_hash,hasher.hexdigest())
+		else:
+			#Was a new file so lets pass now
+			alert.print_message("Adding the file into the db")
+	else:
+		alert.print_message("Yess we hade the values in cache !!")
+		check_the_hash(db_file_hash,hasher.hexdigest())
+
+
+
+
+def check_the_hash(site_hash, db_hash):
+	'''
+	Here is where we check the hash to se if they are the same
+	'''
+
+
+	if site_hash == db_hash:
+		# We have the same hash on the site as in our db
+		# So we are good :-)
+		alert.print_message("All fine the hash matched") 
+	else:
+		# Well now we have a problem the hash in the db and from the site is not the same
+		# Time to alert some good looking people !!!
+		alert.alert_people("We have a strange hash ")
+
+
+
+
+
 
 
 
@@ -29,7 +74,7 @@ data = r.text
 soup = BeautifulSoup(data,'html.parser')
 
 
-print ("Check running on "+site)
+alert.print_message("Check running on "+site)
 
 for link in soup.find_all('script'):
     

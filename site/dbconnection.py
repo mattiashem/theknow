@@ -1,5 +1,7 @@
 from pymongo import MongoClient
 import datetime
+import hashcache
+import alert
 
 #
 # Used to connect to the db 
@@ -26,15 +28,19 @@ def add_file_db(url,id,hash):
          	"version": "latest",
          	"date": datetime.datetime.utcnow()}
 		page_id = db.pages.insert_one(page).inserted_id
-		print("Added a new page "+page_id)
+		alert.print_message("Added a new page "+page_id)
+		#And add it to the cache so we dont need to ask here every time !
+		hashcache.add_to_redis(id,hash)
+
+		#Return false we did not have this file in db before
+		return False
+
 	else:
-		#We already has that fil in the db lest check hash
-		print("check hash "+is_there_page["hash"])
-		if hash == is_there_page["hash"]:
-			# We have the same hash on the site as in our db
-			# So we are good :-)
-			print("All fine the hash matched") 
-		else:
-			# Well now we have a problem the hash in the db and from the site is not the same
-			# Time to alert some good looking people !!!
-			print("ALERT ALERT !!")
+		#We already has that fil in the db so lets add it to the cache
+		alert.print_message("we hade the value in db so add to redis as well")
+		hashcache.add_to_redis(id,hash)
+
+		#Return the hash from the db
+		return is_there_page["hash"]
+
+
