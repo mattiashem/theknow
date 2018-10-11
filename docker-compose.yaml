@@ -6,7 +6,7 @@ services:
     volumes:
       - ./site/:/code
     environment:
-      - sites=www.alamo.co.uk,www.enterprise.com
+      - sites=www.elino.se,www.ollebo.com
       - sleep=3600
     #command: tail -f /etc/fstab
   mongo:
