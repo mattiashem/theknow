@@ -37,7 +37,7 @@ In the file docker-compose.yaml set the site and sleep time
 
 ```
     environment:
-      - sites=www.alamo.co.uk,www.enterprise.com
+      - sites=www.elino.se,www.ollebo.com
       - sleep=3600
 
 ```
