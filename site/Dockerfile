@@ -9,9 +9,10 @@ RUN pip install --upgrade f
 RUN mkdir /code
 RUN mkdir /files
 COPY . /code/
+RUN chmod 777 /code/run.sh
 WORKDIR /code
 RUN pip install -r requirements.txt
 
 
 
-CMD ["python","-u","getlinks.py"]
+CMD /code/run.sh

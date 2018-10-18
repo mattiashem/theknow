@@ -6,9 +6,27 @@ services:
     volumes:
       - ./site/:/code
     environment:
-      - sites=www.elino.se,www.ollebo.com
+      - sites=www.elino.se/,www.ollebo.com/
+      - sleep=3600
+    command: tail -f /etc/fstab
+    ports:
+      - 8080:8080
+  app:
+    build: app/.
+    image: mattiashem/know-app
+    volumes:
+      - ./app/:/code/
+    environment:
       - sleep=3600
     #command: tail -f /etc/fstab
+    ports:
+      - 3000:3000
+      - 8001:8001
+      - 8002:8002
+  proxy:
+    build: proxy/.
+    ports:
+      - 80:80
   mongo:
     image: mongo
   redis:

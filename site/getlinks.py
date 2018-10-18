@@ -15,7 +15,7 @@ import alert
 
 
 
-def hash_file(url):
+def hash_file(url,site):
 	'''
 	Download file and hash
 	'''
@@ -40,7 +40,7 @@ def hash_file(url):
 	db_file_hash = hashcache.check_hash_redis(hash_name.hexdigest())
 	if db_file_hash == False:
 		#We dont have a cached version check in the db else add it there
-		db_file_hash = dbconnection.add_file_db(url,hash_name.hexdigest(),hasher.hexdigest())
+		db_file_hash = dbconnection.add_file_db(url,hash_name.hexdigest(),hasher.hexdigest(),r.content,site)
 		if db_file_hash != False:
 			# We got back a has from the db lets check it 
 			check_the_hash(db_file_hash,hasher.hexdigest())
@@ -88,11 +88,11 @@ def scan_site(site):
 	    
 	    if str(link.get('src')) != "None":
 			if str(link.get('src')).startswith('http'):
-				hash_file(link.get('src'))
+				hash_file(link.get('src'),site)
 			elif str(link.get('src')).startswith('//'):
-				hash_file(link.get('src').replace('//','https://'))
+				hash_file(link.get('src').replace('//','https://'),site)
 			else:
-				hash_file(site+link.get('src'))
+				hash_file(site+link.get('src'),site)
 			
 
 

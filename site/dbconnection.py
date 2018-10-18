@@ -20,7 +20,7 @@ client = MongoClient('mongo', 27017)
 db=client.theknow
 
 
-def add_file_db(url,id,hash):
+def add_file_db(url,id,hash,content,site):
 	'''
 	Adding the file to the db
 	'''
@@ -32,6 +32,8 @@ def add_file_db(url,id,hash):
 			"id": id,
         	"hash": hash,
          	"version": "latest",
+         	"content": content,
+         	"site": site,
          	"date": datetime.datetime.utcnow()}
 		page_id = db.pages.insert_one(page).inserted_id
 		alert.print_message("Added a new page "+str(page_id))
@@ -49,5 +51,24 @@ def add_file_db(url,id,hash):
 		#Return the hash from the db
 		alert.print_message(is_there_page)
 		return is_there_page["hash"]
+
+
+def getUrl():
+	'''
+	Get all urls we have in the db
+	'''
+	back= db.pages.find({"version": "latest"})
+	jsonReturn =[]
+	for url in back:
+		urlReturn = {
+			"site": url.get("site"),
+			"url": url.get("url"),
+			"date": url.get("date").strftime('%Y:%m:%d:%H:%M:%S')
+
+		}
+		jsonReturn.append(urlReturn)
+
+
+	return jsonReturn
 
 
