@@ -53,6 +53,21 @@ def add_file_db(url,id,hash,content,site):
 		return is_there_page["hash"]
 
 
+
+def add_alert_db(url,content,site):
+	'''
+	Adidng an alert to the db
+	'''
+	page = {"url": url,
+         	"version": "latest",
+         	"content": content,
+         	"site": site,
+         	"date": datetime.datetime.utcnow()}
+	page_id = db.alert.insert_one(page).inserted_id
+	alert.print_message("Added new alert to db "+str(page_id))
+
+
+
 def getUrl():
 	'''
 	Get all urls we have in the db
@@ -62,6 +77,7 @@ def getUrl():
 	for url in back:
 		urlReturn = {
 			"site": url.get("site"),
+			"id": str(url.get('_id')),
 			"url": url.get("url"),
 			"date": url.get("date").strftime('%Y:%m:%d:%H:%M:%S')
 
@@ -71,4 +87,23 @@ def getUrl():
 
 	return jsonReturn
 
+
+def getAlerts():
+	'''
+	Get all urls we have in the db
+	'''
+	back= db.alert.find({})
+	jsonReturn =[]
+	for url in back:
+		urlReturn = {
+			"site": url.get("site"),
+			"id": str(url.get('_id')),
+			"url": url.get("url"),
+			"date": url.get("date").strftime('%Y:%m:%d:%H:%M:%S')
+
+		}
+		jsonReturn.append(urlReturn)
+
+
+	return jsonReturn
 

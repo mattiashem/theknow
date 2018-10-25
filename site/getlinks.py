@@ -43,18 +43,18 @@ def hash_file(url,site):
 		db_file_hash = dbconnection.add_file_db(url,hash_name.hexdigest(),hasher.hexdigest(),r.content,site)
 		if db_file_hash != False:
 			# We got back a has from the db lets check it 
-			check_the_hash(db_file_hash,hasher.hexdigest())
+			check_the_hash(db_file_hash,hasher.hexdigest(),url,r.content,site)
 		else:
 			#Was a new file so lets pass now
 			alert.print_message("Adding the file into the db")
 	else:
 		alert.print_message("Yess we hade the values in cache !!")
-		check_the_hash(db_file_hash,hasher.hexdigest())
+		check_the_hash(db_file_hash,hasher.hexdigest(),url,r.content,site)
 
 
 
 
-def check_the_hash(site_hash, db_hash):
+def check_the_hash(site_hash,db_hash,url,content,site):
 	'''
 	Here is where we check the hash to se if they are the same
 	'''
@@ -68,6 +68,7 @@ def check_the_hash(site_hash, db_hash):
 		# Well now we have a problem the hash in the db and from the site is not the same
 		# Time to alert some good looking people !!!
 		alert.alert_people("We have a strange hash ")
+		dbconnection.add_alert_db(url,content,site)
 
 
 
