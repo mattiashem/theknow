@@ -6,7 +6,7 @@ services:
     volumes:
       - ./site/:/code
     environment:
-      - sites=www.elino.se/,www.ollebo.com/
+      - sites=www.alamo.se/,www.ollebo.com/
       - sleep=3600
     #command: tail -f /etc/fstab
     ports:

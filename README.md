@@ -42,6 +42,17 @@ In the file docker-compose.yaml set the site and sleep time
 
 ```
 
+
+## First run
+The first time you may need the npm packages to start 
+
+
+```
+docker-compose run app yarn install
+```
+
+
+
 ## Start the check
 
 
